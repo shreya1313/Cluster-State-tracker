@@ -1,0 +1,100 @@
+version: '2'
+
+services:
+  # mongo database
+  db:
+    image: mongo:3.6
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    command: --smallfiles --storageEngine wiredTiger
+
+  # redis cache
+  cache:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    command: --appendonly yes
+
+  # redis cache
+  broker:
+    image: rabbitmq:3.6-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  # celery service
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: diff-checker
+    volumes:
+      - ./src:/code
+      - ./logs:/var/log/diff-checker
+    env_file:
+      local.env
+    command: >
+      /bin/ash -c "
+        while ! nc -z cache 6379;
+        do
+          echo sleeping for cache;
+          sleep 1;
+        done;
+        while ! nc -z db 27017;
+        do
+          echo sleeping for database;
+          sleep 1;
+        done;
+        while ! nc -z broker 5672;
+        do
+          echo sleeping for broker;
+          sleep 1;
+        done;
+
+        su -m celery -c 'celery -A app.celery worker --loglevel=info'
+      "
+    depends_on:
+      - broker
+      - web
+      - db
+
+  # web service for flask application
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: diff-checker
+    env_file:
+      local.env
+    command: >
+      /bin/ash -c "
+        while ! nc -z cache 6379;
+        do
+          echo sleeping for cache;
+          sleep 1;
+        done;
+        while ! nc -z db 27017;
+        do
+          echo sleeping for database;
+          sleep 1;
+        done;
+        while ! nc -z broker 5672;
+        do
+          echo sleeping for broker;
+          sleep 1;
+        done;
+
+        gunicorn --bind=0.0.0.0:5000 -w 2 app
+      "
+    volumes:
+      - ./src/:/code
+      - ./logs:/var/log/diff-checker
+    ports:
+      - "8400:5000"
+    depends_on:
+      - broker
+      - db

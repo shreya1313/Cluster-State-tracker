@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>services</title>
+	<style type="text/css">
+		body {
+  		background-color: #8fa89c;
+		}
+		table {
+			width: 100%;
+		}
+		li{
+			background: #3399ff;
+  			padding: 10px; 
+  			background: #cce5ff;
+  			margin: 5px;
+  			border-radius: 25px;
+		}
+		a{
+			color: white;
+			text-decoration: none
+		}
+		td, th {
+		border: 1px solid #293c5b;
+		text-align: left;
+		padding: 8px;
+		color: white;
+		text-align: center;
+		}
+		tr:nth-child(even) {
+		background-color: #55637a;
+		}
+		/* Create three unequal columns that floats next to each other */
+		.left, .right {
+		  width: 35%;
+		}
+
+		.middle {
+		  width: 30%;
+		}
+
+	</style>
+</head>
+<body>
+	<form action="/deployed" method="POST">
+		<fieldset>
+			<legend>Select the environment</legend>
+				<div>
+					{{form.env_choice.labe}}  {{form.env_choice}}
+					<button type="submit" class="button" style="background-color:grey">Search</button>
+				</div>
+		</fieldset>
+	</form>
+
+	<h1>Unique apps names under this environment:</h1>
+	
+		<table>
+			<tr>
+			<th class="column left">last updated on</th>
+			<th class="column middle">app</th>
+			<th class="column right">status</th>
+			</tr>
+			{%for i in range(len_app)%}
+
+				<tr>
+					<td>{{cur_st[i]['last_update']}}</td>
+					<td><a href="details/{{dep[i]}}">{{dep[i]}}</a></td>
+					<td>{{cur_st[i]['status']}} by {{cur_st[i]['message']|length}} commits</td>
+				</tr>
+			
+			{%endfor%}
+
+		</table>
+
+
+</body>
+</html>

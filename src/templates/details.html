@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Further details</title>
+	<style>
+	body {
+  		background-color: #454f5e;
+	}
+	table {
+		font-family: arial, sans-serif;
+		border-collapse: collapse;
+		width: 100%;
+	}
+
+	td, th {
+		border: 1px solid #293c5b;
+		text-align: left;
+		padding: 8px;
+		color: white;
+		text-align: center;
+	}
+
+	tr:nth-child(even) {
+		background-color: #55637a;
+	}
+	tr:nth-child(odd) {
+		background-color: #3c4b63;
+	}
+
+	th {
+ 		background-color: #293c5b;
+  		color: pink; 
+  		text-align: center;
+  		/*#5f99ef*/
+	}
+	h2{
+		color: #9ca82f;
+	}
+	li{
+		color: white;
+	}
+	h4{
+		color: beige;
+	}
+	div{
+		color: pink
+	}
+
+</style>
+</head>
+<body>
+
+
+	<h2>Commits yet to be deployed:</h2>
+	<h4>Last Deployed Branch: {{cur_branch}}</h4>
+	
+
+	<div>
+		{%if commits['status'] == '[OK]'%}
+			<p>Congratulations, you are upto date with the remote repository</p>
+		{%else%}
+			<p>YOU ARE {{commits['status']}}</p>
+			<br>
+			<p>Description of undeployed commits:</p>
+			<table>
+			<tr>
+				<th>commit_id</th>
+				<th>commit_message</th>
+			</tr>
+			{%for i in range(commits['message']|length)%}
+				<tr>
+					<td>{{commits['message'][i]['commit_id']}}</td>
+					<td>{{commits['message'][i]['commit_message']}}</td>
+				</tr>
+			{%endfor%}
+				</table>
+		{%endif%}
+	</div>
+
+
+	
+
+</body>
+</html>
