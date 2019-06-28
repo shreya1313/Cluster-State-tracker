@@ -3,18 +3,21 @@ from __future__ import unicode_literals, print_function
 import os
 import re
 
-
 from services.utils import execute, get_command_output
 
-REPOSITORY_URI = 'git@github.com:argoyal/{name}.git'
+
+PKEY_PATH = os.environ.get('PRIVATE_KEY_PATH')
+REPOSITORY_URI = 'git@bitbucket.org:spotmentordev/{name}.git'
 
 GIT_CONFIG_COMMAND = "git config --global credential.helper " +\
     "'cache --timeout=600'"
 
-GIT_CLONE_COMMAND = 'git clone ' \
-                    '--single-branch -b {branch} {repo_uri}'
+GIT_CLONE_COMMAND = "ssh-agent ash -c 'ssh-add {}; ".format(PKEY_PATH) +\
+    "git clone --single-branch -b {branch} {repo_uri} " +\
+    "/var/lib/repo/{repo_name}'"
 
-GIT_PULL_COMMAND = 'git pull origin {branch}'
+GIT_PULL_COMMAND = "ssh-agent ash -c 'ssh-add {}; ".format(PKEY_PATH) +\
+    "git pull origin {branch}'"
 
 GIT_COMPARE_COMMAND = 'git log --right-only --graph ' \
                       '--oneline {left}...{right}'
@@ -25,8 +28,12 @@ def config_git_user():
     execute(command)
 
 
-def clone(repo_uri, branch):
-    command = GIT_CLONE_COMMAND.format(repo_uri=repo_uri, branch=branch)
+def clone(repo, branch):
+    repo_uri = REPOSITORY_URI.format(name=repo)
+
+    command = GIT_CLONE_COMMAND.format(
+        repo_uri=repo_uri, branch=branch, repo_name=repo)
+
     exit_code = execute(command)
 
     if exit_code:
@@ -90,14 +97,15 @@ def parse_commit_diff(diff):
 
 
 def compare_with_remote(repo, branch, commit_id):
-    repo_uri = REPOSITORY_URI.format(name=repo)
     config_git_user()
+
     if exists(repo):
         chdir(repo)
         pull(branch)
     else:
-        clone(repo_uri, branch)
+        clone(repo, branch)
         chdir(repo)
+
     diff = commit_diff(commit_id)
     commits = parse_commit_diff(diff)
 
@@ -124,7 +132,7 @@ def get_new_commits_after(repo, branch, commit):
 
 def prepare_workspace():
     original_working_dir = os.path.abspath(os.curdir)
-    workspace = os.path.abspath(os.curdir + '/repos')
+    workspace = '/var/lib/repo'
 
     if exists(workspace):
         pass

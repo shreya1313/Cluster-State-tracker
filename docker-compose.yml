@@ -28,9 +28,6 @@ services:
 
   # celery service
   worker:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: diff-checker
     volumes:
       - ./src:/code
@@ -55,7 +52,7 @@ services:
           sleep 1;
         done;
 
-        su -m celery -c 'celery -A app.celery worker --loglevel=info'
+        run_ssh.sh && su -m celery -c 'celery -A app.celery worker --loglevel=info'
       "
     depends_on:
       - broker
@@ -88,7 +85,7 @@ services:
           sleep 1;
         done;
 
-        gunicorn --bind=0.0.0.0:5000 -w 2 app
+        run_ssh.sh && gunicorn --bind=0.0.0.0:5000 -w 2 app
       "
     volumes:
       - ./src/:/code
