@@ -9,9 +9,6 @@ from services.utils import execute, get_command_output
 PKEY_PATH = os.environ.get('PRIVATE_KEY_PATH')
 REPOSITORY_URI = 'git@bitbucket.org:spotmentordev/{name}.git'
 
-GIT_CONFIG_COMMAND = "git config --global credential.helper " +\
-    "'cache --timeout=600'"
-
 GIT_CLONE_COMMAND = "ssh-agent ash -c 'ssh-add {}; ".format(PKEY_PATH) +\
     "git clone --single-branch -b {branch} {repo_uri} " +\
     "/var/lib/repo/{repo_name}'"
@@ -21,11 +18,6 @@ GIT_PULL_COMMAND = "ssh-agent ash -c 'ssh-add {}; ".format(PKEY_PATH) +\
 
 GIT_COMPARE_COMMAND = 'git log --right-only --graph ' \
                       '--oneline {left}...{right}'
-
-
-def config_git_user():
-    command = GIT_CONFIG_COMMAND
-    execute(command)
 
 
 def clone(repo, branch):
@@ -97,8 +89,6 @@ def parse_commit_diff(diff):
 
 
 def compare_with_remote(repo, branch, commit_id):
-    config_git_user()
-
     if exists(repo):
         chdir(repo)
         pull(branch)

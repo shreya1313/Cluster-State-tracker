@@ -32,7 +32,9 @@ ALL_CLI_COMMANDS = {
 """
 
 from scripts.tests import test_cli_command
+from scripts.update_status import update_status
 
 ALL_CLI_COMMANDS = {
-    "test_command": test_cli_command
+    "test_command": test_cli_command,
+    "update_deployment_status": update_status,
 }
