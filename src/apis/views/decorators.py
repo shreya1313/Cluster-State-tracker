@@ -4,10 +4,19 @@ from clients.auth_client import AuthClient
 from clients.utils.errors import ClientException
 
 
+def extract_authorization_key():
+    """
+    extracts authorization keys from headers or cookies
+    """
+
+    return request.headers.get('Authorization') or \
+        request.cookies.get('authorization_key')
+
+
 def internal_user_required(func):
 
     def wrapper(*args, **kwargs):
-        authorization_key = request.headers.get('Authorization')
+        authorization_key = extract_authorization_key()
 
         try:
             output = AuthClient.login_internal_user(
