@@ -5,7 +5,6 @@ from common.utils.event_conf import generate_consumer_exchange_configuration
 INSTALLED_APPS = [
     'descriptors',
     'models',
-    'utils',
     'services',
     'apis',
 ]
