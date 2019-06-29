@@ -46,7 +46,7 @@
 		<fieldset>
 			<legend>Select the environment</legend>
 				<div>
-					{{form.env_choice.labe}}  {{form.env_choice}}
+					{{form.env_choice.label}}  {{form.env_choice}}
 					<button type="submit" class="button" style="background-color:grey">Search</button>
 				</div>
 		</fieldset>
@@ -54,18 +54,19 @@
 
 	<h1>Unique apps names under this environment:</h1>
 	
-		<table>
+    <table>
 			<tr>
-			<th class="column left">last updated on</th>
-			<th class="column middle">app</th>
-			<th class="column right">status</th>
+			  <th class="column left">last updated on</th>
+			  <th class="column middle">app</th>
+			  <th class="column right">status</th>
 			</tr>
-			{%for i in range(len_app)%}
+
+			{% for svc, cur_status in cur_st.items() %}
 
 				<tr>
-					<td>{{cur_st[i]['last_update']}}</td>
-					<td><a href="details/{{dep[i]}}">{{dep[i]}}</a></td>
-					<td>{{cur_st[i]['status']}} by {{cur_st[i]['message']|length}} commits</td>
+					<td>{{cur_status['last_update']}}</td>
+          <td><a href="details/{{svc}}?env={{cur_status['environment']}}">{{svc}}</a></td>
+					<td>{{cur_status['status']}} by {{cur_status['messages']|length}} commits</td>
 				</tr>
 			
 			{%endfor%}

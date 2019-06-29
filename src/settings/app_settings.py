@@ -19,3 +19,8 @@ USES_DEPENDENCY_INJECTION = False
 
 RESULTS_PER_PAGE = 10
 SECRET_KEY = 'shutup'
+
+# Celery Beat Schedules
+ENABLED_SCHEDULES = [
+    'update-repo-status',
+]

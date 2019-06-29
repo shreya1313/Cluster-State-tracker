@@ -2,33 +2,36 @@ from flask import render_template, request
 
 from services import DeploymentService
 from forms import EnvironmentChoice
+from .decorators import internal_user_required
 
 
 srv = DeploymentService()
 
 
+@internal_user_required
 def deployed():
     form = EnvironmentChoice()
 
     if request.method == 'POST':
-        d = srv.get_distinct_app_names(request.form['env_choice'])
-        cur_st = [srv.get_saved_status(s) for s in d]
-        return render_template(
-            'deployed.html', len_app=len(d), dep=d, form=form, cur_st=cur_st)
+        cur_st = srv.get_saved_status(request.form['env_choice'])
+
+        return render_template('deployed.html', form=form, cur_st=cur_st)
     else:
-        d = srv.get_distinct_app_names()
-        cur_st = [srv.get_saved_status(s) for s in d]
-        return render_template(
-            'deployed.html', len_app=len(d), dep=d, form=form, cur_st=cur_st)
+        cur_st = srv.get_saved_status()
+
+        return render_template('deployed.html', form=form, cur_st=cur_st)
 
 
+@internal_user_required
 def details(service):
-    details = srv.get_latest_deployment_details(service)
+    env = request.args.to_dict().get('env')
 
-    commits = srv.get_undeployed_commits(
-        service, details.get('commit_hash'), details.get('branch'))
+    cur_st = srv.get_saved_status(env)
+
+    details = srv.get_latest_deployment_details(service, env)
+
+    status = cur_st.get(service)
 
     return render_template(
         'details.html',
-        cur_branch=details.get('branch'), commits=commits
-    )
+        cur_branch=details.get('branch'), commits=status)

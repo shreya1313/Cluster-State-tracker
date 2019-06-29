@@ -67,10 +67,10 @@
 				<th>commit_id</th>
 				<th>commit_message</th>
 			</tr>
-			{%for i in range(commits['message']|length)%}
+			{%for message in commits['messages']%}
 				<tr>
-					<td>{{commits['message'][i]['commit_id']}}</td>
-					<td>{{commits['message'][i]['commit_message']}}</td>
+					<td>{{message['commit_id']}}</td>
+					<td>{{message['commit_message']}}</td>
 				</tr>
 			{%endfor%}
 				</table>

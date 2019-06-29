@@ -1,3 +1,6 @@
 [submodule "src/common"]
 	path = src/common
 	url = https://bitbucket.org/spotmentordev/common.git
+[submodule "src/clients"]
+	path = src/clients
+	url = https://bitbucket.org/spotmentordev/clients.git

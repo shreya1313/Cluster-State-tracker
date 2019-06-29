@@ -14,7 +14,16 @@ class Deployments(me.Document):
 
 class Status(me.Document):
 
+    environment = me.StringField(required=True)
     app = me.StringField(required=True)
     status = me.StringField(required=True)
-    message = me.ListField(required=True)
+    messages = me.ListField(required=True)
     last_update = me.StringField(required=True)
+
+    meta = {
+        'indexes': [
+            ('environment', 'app', ),
+        ],
+        'auto_create_index': True,
+        'index_background': True
+    }
