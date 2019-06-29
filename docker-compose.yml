@@ -44,7 +44,7 @@ services:
           sleep 1;
         done;
 
-        ./run_ssh.sh && su -m celery -c 'celery -A app.celery beat --loglevel debug --pidfile=/home/celery/celerybeat.pid -S=celerybeatmongo.schedulers.MongoScheduler'
+        ssh-agent -s && su -m celery -c 'celery -A app.celery beat --loglevel debug --pidfile=/home/celery/celerybeat.pid -S=celerybeatmongo.schedulers.MongoScheduler'
       "
     depends_on:
       - broker
@@ -77,7 +77,7 @@ services:
           sleep 1;
         done;
 
-        ./run_ssh.sh && su -m celery -c 'celery -A app.celery worker --loglevel=info'
+        ssh-agent -s && su -m celery -c 'celery -A app.celery worker --loglevel=info'
       "
     depends_on:
       - broker
@@ -112,7 +112,7 @@ services:
           sleep 1;
         done;
 
-        ./run_ssh.sh && gunicorn --bind=0.0.0.0:5000 -w 2 app
+        ssh-agent -s && gunicorn --bind=0.0.0.0:5000 -w 2 app
       "
     volumes:
       - ./src/:/code

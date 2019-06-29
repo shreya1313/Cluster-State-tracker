@@ -26,4 +26,6 @@ ADD keys/spotmentordev /root/.ssh/spotmentordev
 
 RUN chmod 400 /root/.ssh/spotmentordev
 
+RUN echo -e "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
+
 ENTRYPOINT ["/code/common/startup.sh"]
