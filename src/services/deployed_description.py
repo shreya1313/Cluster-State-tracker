@@ -48,9 +48,19 @@ class DeploymentService(object):
 
         statuses = filter(lambda x: x.status != '[UNKNOWN]', statuses)
 
-        return {
+        updated_sts = {
             status.app: to_dict(status) for status in statuses
         }
+
+        return_out = {}
+
+        for app, status in updated_sts.items():
+            details = self.get_latest_deployment_details(app, env)
+            status.update({'current_branch': details.get('branch')})
+
+            return_out.update({app: status})
+
+        return return_out
 
     def get_undeployed_commits(self, service, commit_hash, branch):
         """

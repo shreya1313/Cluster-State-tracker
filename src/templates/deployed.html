@@ -57,6 +57,7 @@
     <table>
 			<tr>
 			  <th class="column left">last updated on</th>
+			  <th class="column">current branch</th>
 			  <th class="column middle">app</th>
 			  <th class="column right">status</th>
 			</tr>
@@ -65,6 +66,7 @@
 
 				<tr>
 					<td>{{cur_status['last_update']}}</td>
+          <td>{{cur_status['current_branch']}}</td>
           <td><a href="details/{{svc}}?env={{cur_status['environment']}}">{{svc}}</a></td>
 					<td>{{cur_status['status']}} by {{cur_status['messages']|length}} commits</td>
 				</tr>
