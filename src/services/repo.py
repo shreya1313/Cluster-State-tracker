@@ -17,7 +17,7 @@ GIT_PULL_COMMAND = "ssh-agent ash -c 'ssh-add {}; ".format(PKEY_PATH) +\
     "git pull origin {branch}'"
 
 GIT_COMPARE_COMMAND = 'git log --right-only --graph ' \
-                      '--oneline {left}...{right}'
+                      '--pretty=format:"%h    %an    %s" {left}...{right}'
 
 
 def clone(repo, branch):
@@ -65,6 +65,7 @@ def exists(path):
 
 def parse_commit_diff(diff):
     diff = diff.strip()
+    seperator = re.compile('\s{4}')
 
     if not diff:
         return []
@@ -73,16 +74,16 @@ def parse_commit_diff(diff):
 
     commits = []
     for row in rows:
-        _id = re.findall('[a-zA-Z0-9]{7}', row)
+        sep = re.split(seperator, row, maxsplit=2)
+        _id = re.findall('[a-zA-Z0-9]{7}', sep[0])
         if not _id or _id == ' ':
             continue
-        _id = _id[0]
-        _msg = row[10:]
-        _msg = re.sub('^\d{1,2}', '', _msg)
-        _msg = _msg
+        author_name = sep[1]
+        msg = sep[2]
         commits.append({
             'commit_id': _id,
-            'commit_message': _msg,
+            'author_name': author_name,
+            'commit_message': msg,
         })
 
     return (commits)

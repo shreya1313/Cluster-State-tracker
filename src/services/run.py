@@ -20,6 +20,7 @@ def current_status(app, branch, commit):
             for data in commits:
                 msg.append({
                     'commit_id': data.get('commit_id'),
+                    'author_name': data.get('author_name'),
                     'commit_message': data.get('commit_message')
                 })
 
