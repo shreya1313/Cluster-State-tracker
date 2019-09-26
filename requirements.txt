@@ -12,5 +12,5 @@ mongomock==3.10.0
 protobuf==3.6.0
 pytest==3.6.3
 redis==2.10.6
-requests==2.19.1
+requests==2.20.0
 wtforms==2.2.1
