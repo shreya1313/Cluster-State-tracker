@@ -1,4 +1,4 @@
-celery==4.1.1
+celery==5.2.2
 celery-message-consumer==1.0.10
 celerybeat-mongo==0.1.0
 Flask==1.0.2
